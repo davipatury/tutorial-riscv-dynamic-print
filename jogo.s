@@ -3,79 +3,79 @@ CHAR_POS:	.half 0,0			# x, y
 OLD_CHAR_POS:	.half 0,0			# x, y
 
 .text
-SETUP:		la a0,map			# carrega o endereÁo do sprite 'map' em a0
+SETUP:		la a0,map			# carrega o endere√ßo do sprite 'map' em a0
 		li a1,0				# x = 0
 		li a2,0				# y = 0
 		li a3,0				# frame = 0
 		call PRINT			# imprime o sprite
 		li a3,1				# frame = 1
 		call PRINT			# imprime o sprite
-		# esse setup serve pra desenhar o "mapa" nos dois frames antes do "jogo" comeÁar
+		# esse setup serve pra desenhar o "mapa" nos dois frames antes do "jogo" come√ßar
 
 GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 		
-		xori s0,s0,1			# inverte o valor frame atual (sÛ o registrador)
+		xori s0,s0,1			# inverte o valor frame atual (s√≥ o registrador)
 		
-		la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
+		la t0,CHAR_POS			# carrega em t0 o endere√ßo de CHAR_POS
 		
-		la a0,char			# carrega o endereÁo do sprite 'char' em a0
-		lh a1,0(t0)			# carrega a posiÁ„o x do personagem em a1
-		lh a2,2(t0)			# carrega a posiÁ„o y do personagem em a2
+		la a0,char			# carrega o endere√ßo do sprite 'char' em a0
+		lh a1,0(t0)			# carrega a posi√ß√£o x do personagem em a1
+		lh a2,2(t0)			# carrega a posi√ß√£o y do personagem em a2
 		mv a3,s0			# carrega o valor do frame em a3
 		call PRINT			# imprime o sprite
 		
-		li t0,0xFF200604		# carrega em t0 o endereÁo de troca de frame
-		sw s0,0(t0)			# mostra o sprite pronto para o usu·rio
+		li t0,0xFF200604		# carrega em t0 o endere√ßo de troca de frame
+		sw s0,0(t0)			# mostra o sprite pronto para o usu√°rio
 		
 		#####################################
 		# Limpeza do "rastro" do personagem #
 		#####################################
-		la t0,OLD_CHAR_POS		# carrega em t0 o endereÁo de OLD_CHAR_POS
+		la t0,OLD_CHAR_POS		# carrega em t0 o endere√ßo de OLD_CHAR_POS
 		
-		la a0,tile			# carrega o endereÁo do sprite 'tile' em a0
-		lh a1,0(t0)			# carrega a posiÁ„o x antiga do personagem em a1
-		lh a2,2(t0)			# carrega a posiÁ„o y antiga do personagem em a2
+		la a0,tile			# carrega o endere√ßo do sprite 'tile' em a0
+		lh a1,0(t0)			# carrega a posi√ß√£o x antiga do personagem em a1
+		lh a2,2(t0)			# carrega a posi√ß√£o y antiga do personagem em a2
 		
-		mv a3,s0			# carrega o frame atual (que est· na tela em a3)
+		mv a3,s0			# carrega o frame atual (que est√° na tela em a3)
 		xori a3,a3,1			# inverte a3 (0 vira 1, 1 vira 0)
 		call PRINT			# imprime
 
 		j GAME_LOOP			# continua o loop
 
-KEY2:		li t1,0xFF200000		# carrega o endereÁo de controle do KDMMIO
+KEY2:		li t1,0xFF200000		# carrega o endere√ßo de controle do KDMMIO
 		lw t0,0(t1)			# Le bit de Controle Teclado
 		andi t0,t0,0x0001		# mascara o bit menos significativo
-   		beq t0,zero,FIM   	   	# Se n„o h· tecla pressionada ent„o vai para FIM
+   		beq t0,zero,FIM   	   	# Se n√£o h√° tecla pressionada ent√£o vai para FIM
   		lw t2,4(t1)  			# le o valor da tecla tecla
 		
 		li t0,'w'
 		beq t2,t0,CHAR_CIMA		# se tecla pressionada for 'w', chama CHAR_CIMA
 		
 		li t0,'a'
-		beq t2,t0,CHAR_ESQ		# se tecla pressionada for 'w', chama CHAR_CIMA
+		beq t2,t0,CHAR_ESQ		# se tecla pressionada for 'a', chama CHAR_CIMA
 		
 		li t0,'s'
-		beq t2,t0,CHAR_BAIXO		# se tecla pressionada for 'w', chama CHAR_CIMA
+		beq t2,t0,CHAR_BAIXO		# se tecla pressionada for 's', chama CHAR_CIMA
 		
 		li t0,'d'
-		beq t2,t0,CHAR_DIR		# se tecla pressionada for 'w', chama CHAR_CIMA
+		beq t2,t0,CHAR_DIR		# se tecla pressionada for 'd', chama CHAR_CIMA
 	
 FIM:		ret				# retorna
 
-CHAR_ESQ:	la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
-		la t1,OLD_CHAR_POS		# carrega em t1 o endereÁo de OLD_CHAR_POS
+CHAR_ESQ:	la t0,CHAR_POS			# carrega em t0 o endere√ßo de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endere√ßo de OLD_CHAR_POS
 		lw t2,0(t0)
-		sw t2,0(t1)			# salva a posiÁ„o atual do personagem em OLD_CHAR_POS
+		sw t2,0(t1)			# salva a posi√ß√£o atual do personagem em OLD_CHAR_POS
 		
 		lh t1,0(t0)			# carrega o x atual do personagem
 		addi t1,t1,-16			# decrementa 16 pixeis
 		sh t1,0(t0)			# salva
 		ret
 
-CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
-		la t1,OLD_CHAR_POS		# carrega em t1 o endereÁo de OLD_CHAR_POS
+CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endere√ßo de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endere√ßo de OLD_CHAR_POS
 		lw t2,0(t0)
-		sw t2,0(t1)			# salva a posiÁ„o atual do personagem em OLD_CHAR_POS
+		sw t2,0(t1)			# salva a posi√ß√£o atual do personagem em OLD_CHAR_POS
 		
 		la t0,CHAR_POS
 		lh t1,0(t0)			# carrega o x atual do personagem
@@ -83,10 +83,10 @@ CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
 		sh t1,0(t0)			# salva
 		ret
 
-CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
-		la t1,OLD_CHAR_POS		# carrega em t1 o endereÁo de OLD_CHAR_POS
+CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endere√ßo de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endere√ßo de OLD_CHAR_POS
 		lw t2,0(t0)
-		sw t2,0(t1)			# salva a posiÁ„o atual do personagem em OLD_CHAR_POS
+		sw t2,0(t1)			# salva a posi√ß√£o atual do personagem em OLD_CHAR_POS
 		
 		la t0,CHAR_POS
 		lh t1,2(t0)			# carrega o y atual do personagem
@@ -94,10 +94,10 @@ CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
 		sh t1,2(t0)			# salva
 		ret
 
-CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
-		la t1,OLD_CHAR_POS		# carrega em t1 o endereÁo de OLD_CHAR_POS
+CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endere√ßo de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endere√ßo de OLD_CHAR_POS
 		lw t2,0(t0)
-		sw t2,0(t1)			# salva a posiÁ„o atual do personagem em OLD_CHAR_POS
+		sw t2,0(t1)			# salva a posi√ß√£o atual do personagem em OLD_CHAR_POS
 		
 		la t0,CHAR_POS
 		lh t1,2(t0)			# carrega o y atual do personagem
@@ -107,13 +107,13 @@ CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endereÁo de CHAR_POS
 		
 
 #################################################
-#	a0 = endereÁo imagem			#
+#	a0 = endere√ßo imagem			#
 #	a1 = x					#
 #	a2 = y					#
 #	a3 = frame (0 ou 1)			#
 #################################################
-#	t0 = endereÁo do bitmap display		#
-#	t1 = endereÁo da imagem			#
+#	t0 = endere√ßo do bitmap display		#
+#	t1 = endere√ßo da imagem			#
 #	t2 = contador de linha			#
 # 	t3 = contador de coluna			#
 #	t4 = largura				#
@@ -141,8 +141,8 @@ PRINT:		li t0,0xFF0			# carrega 0xFF0 em t0
 PRINT_LINHA:	lw t6,0(t1)			# carrega em t6 uma word (4 pixeis) da imagem
 		sw t6,0(t0)			# imprime no bitmap a word (4 pixeis) da imagem
 		
-		addi t0,t0,4			# incrementa endereÁo do bitmap
-		addi t1,t1,4			# incrementa endereÁo da imagem
+		addi t0,t0,4			# incrementa endere√ßo do bitmap
+		addi t1,t1,4			# incrementa endere√ßo da imagem
 		
 		addi t3,t3,4			# incrementa contador de coluna
 		blt t3,t4,PRINT_LINHA		# se contador da coluna < largura, continue imprimindo
